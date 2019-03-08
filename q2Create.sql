@@ -1,18 +1,2 @@
--- Exercise 5
-CREATE VIEW CourseRegistrationsWithGrade as(
-SELECT * FROM CourseRegistrations as CR WHERE CR.Grade > 0);
-
--- Exercise 8
-
-
-CREATE VIEW SACountPerCO as(
-SELECT CO.CourseOfferId, COUNT(DISTINCT SA.StudentRegistrationId) as Count
-FROM CourseOffers as CO, StudentAssistants as SA
-WHERE CO.CourseOfferId = SA.CourseOfferId
-GROUP BY CO.CourseOfferId);
-
-CREATE VIEW SCountPerCO as(
-SELECT CO.CourseOfferId, COUNT(DISTINCT CR.StudentRegistrationId) as Count
-FROM CourseOffers as CO, CourseRegistrations as CR
-WHERE CO.CourseOfferId = CR.CourseOfferId
-GROUP BY CO.CourseOfferId);
+CREATE INDEX stud_reg_id_coursereg ON CourseRegistrations (StudentRegistrationId);
+CREATE MATERIALIZED VIEW GPAperStudentRegistrationId (StudentRegistrationId, GPA, totECTS, StudentId, DegreeId, BirthyearStudent, Gender) as select res. StudentRegistrationId, (res.weight/res.totECTS)+0.0 as GPA, totECTS, S.StudentId, DegreeId, BirthyearStudent, Gender from (select passed.StudentRegistrationId, (sum(ECTS)+0.0) as totECTS, (sum(grade*ECTS)+0.0) as weight from CourseOffers as Co, Courses as C, (select StudentRegistrationId, CourseOfferId, Grade from CourseRegistrations where grade > 4) as passed where passed.CourseOfferId = CO.CourseOfferId and CO.CourseId = C.CourseId group by passed.StudentRegistrationId) as res, StudentRegistrationsToDegrees as SRTD, Students as S where res.StudentRegistrationId = SRTD.StudentRegistrationId and S.StudentId = SRTD.StudentId order by res.StudentRegistrationId;
