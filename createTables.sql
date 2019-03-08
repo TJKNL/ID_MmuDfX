@@ -20,6 +20,6 @@ CREATE UNLOGGED TABLE TeacherAssignmentsToCourses(CourseOfferId int , TeacherId 
 COPY TeacherAssignmentsToCourses(CourseOfferId, TeacherId) FROM '/mnt/ramdisk/tables/TeacherAssignmentsToCourses.table' DELIMITER ',' CSV HEADER;
 CREATE UNLOGGED TABLE StudentAssistants(CourseOfferId int, StudentRegistrationId int);
 COPY StudentAssistants(CourseOfferId, StudentRegistrationId) FROM '/mnt/ramdisk/tables/StudentAssistants.table' DELIMITER ',' CSV HEADER;
-CREATE UNLOGGED TABLE CourseRegistrations(CourseOfferId int, StudentRegistrationId int FOREIGN KEY REFERENCES StudentRegistrationsToDegrees(StudentRegistrationId), Grade smallint);
+CREATE UNLOGGED TABLE CourseRegistrations(CourseOfferId int, StudentRegistrationId int, Grade smallint);
 COPY CourseRegistrations(CourseOfferId, StudentRegistrationId, Grade) FROM '/mnt/ramdisk/tables/CourseRegistrations.table' CSV DELIMITER ',' NULL 'null' HEADER;
 ANALYZE VERBOSE
